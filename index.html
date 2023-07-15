@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=420, initial-scale=1"/>
+    <title>Carousel</title>
+    <script src="node_modules/jquery/dist/jquery.min.js"></script>
+    <script src="assets/js/script.js"></script>
+    <link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body>
+
+<div class="slider"></div>
+<script>
+    $(function () {
+        $('div.slider').skslider({
+            header:'Completed projects',
+            slides:[
+                {
+                    name:'Rostov-on-Don, Admiral',
+                    description: 'Only a small part of the work performed by our company is presented on the site. For 14 years on in the construction market we have made happy more than 1000 families',
+                    options:{
+                        city:'Rostov-on-Don LCD admiral',
+                        area:'81 m2',
+                        time:'3.5 months',
+                        cost:'Upon request',
+                    },
+                    image:'assets/images/image-1.png',
+                    thumb: null
+                },
+                {
+                    name:'Sochi Thieves',
+                    description: 'Only a small part of the work performed by our company is presented on the site. For 14 years on in the construction market we have made happy more than 1000 families',
+                    options:{
+                        city:'Sochi Thieves',
+                        area:'105 m2',
+                        time:'4 months',
+                        cost:'Upon request',
+                    },
+                    image:'assets/images/image-2.png',
+                    thumb: null
+                },
+                {
+                    name:'Rostov-on-Don Patriotic',
+                    description: 'Only a small part of the work performed by our company is presented on the site. For 14 years on in the construction market we have made happy more than 1000 families',
+                    options:{
+                        city:'Rostov-on-Don Patriotic',
+                        area:'93 m2',
+                        time:'3 months',
+                        cost:'Upon request',
+                    },
+                    image:'assets/images/image-3.png',
+                    thumb: null
+                }
+            ]
+        });
+    });
+</script>
+</body>
+</html>

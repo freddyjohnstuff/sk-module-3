@@ -1,0 +1,215 @@
+@import url('https://fonts.googleapis.com/css2?family=Nunito+Sans:ital,wght@0,400;0,600;0,700;0,800;0,900;1,400;1,600;1,700;1,800;1,900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Yeseva+One:ital,wght@0,400;0,600;0,700;0,800;0,900;1,400;1,600;1,700;1,800;1,900&display=swap');
+@import url('https://fonts.googleapis.com/css?family=Oswald:ital,wght@0,400;0,600;0,700;0,800;0,900;1,400;1,600;1,700;1,800;1,900&display=swap');
+
+
+html,
+body{
+    margin: 0;
+    padding: 0;
+    background-color: #000000;
+}
+
+.slider {
+    display: block;
+    width: 100%;
+}
+
+
+.sk-container {
+    display: flex;
+    width: calc(100% - 86px);
+    max-width: 1200px;
+    margin: 50px auto;
+    padding: 42px;
+    background-color: #131313;
+    border: 1px solid #E3B873;
+}
+
+.sk-container-left {
+    display: flex;
+    flex-direction: column;
+    width: calc(40% - 50px);
+    padding: 0 25px;
+}
+.sk-container-right {
+    display: flex;
+    flex-direction: column;
+    width: calc(60% - 50px);
+    padding: 0 25px;
+}
+
+.sk-container ul,
+.sk-container li {
+    list-style: none;
+}
+
+.sk-container ul {
+    display: flex;
+    padding-left: 0;
+}
+
+.sk-container * {
+    color: #FFFFFF;
+}
+
+.sk-header {
+    color: #E3B873;
+    font-family: 'Yeseva One', sans-serif;
+    font-size: 27px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 27px; /* 37.422px */
+    letter-spacing: -1.89px;
+    text-transform: uppercase;
+}
+
+.sk-description{
+    display: block;
+    margin-right: 30px;
+
+    color: #FFFFFF;
+    font-family: 'Nunito Sans', sans-serif;
+    font-size: 14px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 26px; /* 26.734px */
+    text-align: left;
+
+}
+
+
+.sk-info {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    margin: 42px 0;
+}
+
+.sk-info__row {
+    display: block;
+    width: 50%;
+    margin: 18px 0;
+}
+
+.sk-info__header {
+    color: #E3B873;
+    font-family: 'Yeseva One', sans-serif;
+    font-size: 18px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 138.6%; /* 24.948px */
+    text-transform: uppercase;
+}
+.sk-info__text {
+    color: #FFF;
+    font-family: 'Nunito Sans', sans-serif;
+    font-size: 13px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 163.68%; /* 21.278px */
+}
+
+
+.sk-images {
+    width: 100%;
+    height: fit-content;
+    margin: 0;
+}
+.sk-images__item {
+    width: 100%;
+}
+.sk-images__image{
+    width: 100%;
+}
+
+.sk-name:not(:first-child) {
+    margin-left: 24px;
+}
+
+.sk-name > a{
+    color: rgba(255, 255, 255, 0.30);
+    font-family: 'Yeseva One', sans-serif;
+    font-size: 12px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 18px;
+    text-transform: uppercase;
+}
+
+.sk-name.active > a,
+.sk-name > a:active,
+.sk-name > a:hover,
+.sk-name > a:visited{
+    color: #E3B873;
+    text-decoration: underline;
+}
+
+
+.sk-dots {
+    display: block;
+    width: 260px;
+    height: 20px;
+    margin: 0 auto;
+}
+
+.sk-arr-left,
+.sk-arr-right {
+    display: block;
+    width: 16px;
+    height: 16px;
+    background-repeat: no-repeat;
+    background-position: center center;
+    background-size: 16px 16px;
+    cursor: pointer;
+    margin: 0 8px;
+}
+
+.sk-arr-left {
+    background-image: url(../images/arrow-left.svg);
+}
+.sk-arr-right {
+    background-image: url(../images/arrow-right.svg);
+}
+
+.sk-dot {
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+    margin: 0 8px;
+    text-align: center;
+    vertical-align: top;
+    cursor: pointer;
+}
+
+
+.sk-dot > a {
+    font-size: 20px;
+    line-height: 20px ;
+    text-decoration: none;
+    text-transform: none;
+    color: #FFFFFF;
+    opacity: 0.7;
+}
+
+.sk-dot.active > a,
+.sk-dot > a:active,
+.sk-dot > a:hover,
+.sk-dot > a:visited {
+    opacity: 1;
+}
+
+
+@media (max-width: 980px) {
+
+    .sk-container {
+        flex-direction: column-reverse;
+        padding: 4%;
+        width: 92%;
+    }
+    .sk-container-right,
+    .sk-container-left {
+        width: 100%;
+        padding: 0;
+    }
+}
