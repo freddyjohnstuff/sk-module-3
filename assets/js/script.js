@@ -1,166 +1,296 @@
 "use strict";
-(function () {
-    $.fn.skslider = function (options) {
+window.currentImageId = null;
+var $skSlider = {
 
-        window.currentImageId = null;
+    _this:this,
+    labels:{
+        city:'City:',
+        area:'Apartment area:',
+        time:'Repair time:',
+        cost:'Repair Cost:',
+    },
+    template:{
+        name:'name',
+        description: 'description',
+        options:{
+            city:'city',
+            area:'area',
+            time:'time',
+            cost:'cost',
+        },
+        image:'image',
+        thumb: 'thumb'
+    },
+    defaults:{
+        header:'Header sample',
+        slides:[]
+    },
+    options: {},
 
-        var activeById = (id) => {
 
-            if(String(id) !== String(window.currentImageId)) {
-                window.currentImageId = id;
-                $('.sk-container .sk-blocks > li').animate({opacity: 0},150).hide();
-                $('.sk-container .sk-blocks > li[data-id=' + id + ']').animate({opacity: 1},150).show();
-
-                $('.sk-container .sk-images > li').animate({opacity: 0},150).hide();
-                $('.sk-container .sk-images > li[data-id=' + id + ']').animate({opacity: 1},150).show();
-
-                $('.sk-container  ul.sk-dots > li.sk-dot').removeClass('active');
-                $('.sk-container  ul.sk-dots > li[data-id=' + id + ']').addClass('active');
-
-                $('.sk-container ul.sk-names > li.sk-name').removeClass('active');
-                $('.sk-container ul.sk-names > li[data-id=' + id + ']').addClass('active');
-
+    /**
+     *  Wrapper for createElement
+     *
+     * @param tag
+     * @param options
+     * @returns {*}
+     */
+    makeElement:(tag,options) => {
+        var key;
+        var el = document.createElement(tag);
+        if(options) {
+            for(key in options) {
+                switch (key) {
+                    case 'class':
+                        el.classList.add(options[key]);
+                        break
+                    case 'html':
+                        var it = document.createTextNode(options[key])
+                        el.appendChild(it);
+                        break
+                    default:
+                        el.setAttribute('id', options[key]);
+                        break
+                }
             }
-        };
-        var getItemByArrow = (arrow) => {
-            var names = [];
-            var curIndex = -1;
-            $('ul.sk-names > li.sk-name').each((index,element) => {
-                var id = $(element).data('id');
+        }
+        return el;
+    },
+    /**
+     * Show selected slide by id
+     * @param id
+     */
+    activeById: (id) => {
+        if(String(id) !== String(window.currentImageId)) {
+            window.currentImageId = id;
+
+            $skSlider.hideByCondition('li.sk-block', id);
+            $skSlider.hideByCondition('li.sk-images__item', id);
+
+            $skSlider.activeByCondition('li.sk-dot', id);
+            $skSlider.activeByCondition('li.sk-name', id);
+        }
+    },
+    /**
+     * Control behavior of arrow buttons
+     * @param arrow
+     * @returns {*}
+     */
+    getItemByArrow: (arrow) => {
+        var names = [];
+        var curIndex = -1;
+
+        var i, id,  blocks = document.querySelectorAll('li.sk-block');
+        for(i in blocks) {
+            if(parseInt(i) == i) {
+                let id = blocks[i].getAttribute('id');
                 names.push(id);
                 if(String(id) === String(window.currentImageId)){
-                    curIndex = index;
-                }
-            });
-
-            var cnt = names.length - 1;
-            if(curIndex === -1) {
-                newIndex = 0;
-            } else {
-                var newIndex = parseInt(curIndex) + parseInt(arrow);
-                if(newIndex < 0) {
-                    newIndex = cnt;
-                }
-                if(newIndex > cnt) {
-                    newIndex = 0;
+                    curIndex = i;
                 }
             }
-            return names[newIndex];
-        };
+        }
 
-        var hideObjects = ()=>{
-            $('.sk-container ul.sk-blocks > li:not(:first-child)').hide();
-            $('.sk-container ul.sk-images > li:not(:first-child)').hide();
-            $('.sk-container ul.sk-dots > li:nth-child(2)').addClass('active');
-            $('.sk-container ul.sk-names > li:first-child').addClass('active');
-            window.currentImageId = $('.sk-container ul.sk-names > li.active').data('id');
-        };
-        var bindObjects = ()=>{
+        var cnt = names.length - 1;
+        if(curIndex === -1) {
+            newIndex = 0;
+        } else {
+            var newIndex = parseInt(curIndex) + parseInt(arrow);
+            if(newIndex < 0) {
+                newIndex = cnt;
+            }
+            if(newIndex > cnt) {
+                newIndex = 0;
+            }
+        }
+        return names[newIndex];
+    },
 
-            $('ul.sk-names > li.sk-name').on('click', function (e) {
-                $('ul.sk-names > li.sk-name').removeClass('active');
-                $(this).addClass('active');
-                var id = $(this).data('id');
-                activeById(id);
-            })
+    /**
+     * Activate names and dots by id
+     * @param elementsClass
+     * @param id
+     */
+    activeByCondition: (elementsClass, id) => {
+        var i, blocks = document.querySelectorAll(elementsClass);
+        for(i in blocks) {
+            if(parseInt(i) == i) {
 
-            $('ul.sk-dots > li.sk-dot').on('click', function (e) {
-                $('ul.sk-dots > li.sk-dot').removeClass('active');
-                $(this).addClass('active');
-                var id = $(this).data('id');
-                activeById(id);
-            })
-
-            $('ul.sk-dots > li:not(.sk-dot)').on('click', function (e) {
-                var arrow;
-                if($(this).hasClass('sk-arr-left')) {
-                    arrow = -1;
+                if((blocks[i].hasAttribute('id')
+                        && String(blocks[i].getAttribute('id')) === String(id)) ||
+                    ( blocks[i].hasAttribute('data-id')
+                        && String(blocks[i].getAttribute('data-id')) === String(id)))  {
+                    blocks[i].classList.add('active');
                 } else {
-                    arrow = 1;
+                    blocks[i].classList.remove('active');
                 }
-                var id = getItemByArrow(arrow);
-                activeById(id);
-            })
+            }
+        }
+    },
+    /**
+     * Show slide by id
+     * @param elementsClass
+     * @param id
+     */
+    hideByCondition: (elementsClass, id) => {
+        var i, blocks = document.querySelectorAll(elementsClass);
+        for(i in blocks) {
+
+/*
+            console.log(i);
+            console.log(blocks[i]);
+*/
+            if(parseInt(i) == i) {
+                if((blocks[i].hasAttribute('id')
+                        && String(blocks[i].getAttribute('id')) === String(id)) ||
+                    ( blocks[i].hasAttribute('data-id')
+                        && String(blocks[i].getAttribute('data-id')) === String(id)))  {
+                    blocks[i].style.display = 'block';
+                } else {
+                    blocks[i].style.display = 'none';
+                }
+            }
+        }
+    },
+    hideNotFirstElement: (elementsClass) => {
+        var i, blocks = document.querySelectorAll(elementsClass);
+        for(i in blocks) {
+            if(parseInt(i) == i && i > 0)  {
+                blocks[i].style.display = 'none';
+            }
+        }
+    },
+    /**
+     * Start function for hide other slides
+     * @param id
+     */
+    hideObjects: (id) => {
+        console.log('hide');
+        $skSlider.hideNotFirstElement('li.sk-block')
+        $skSlider.hideNotFirstElement('li.sk-images__item')
+
+        var activeDot = document.querySelector('li.sk-dot');
+        activeDot.classList.add('active');
+        var activeName = document.querySelector('li.sk-name');
+        activeName.classList.add('active');
+        window.currentImageId = activeName.getAttribute('data-id');
+
+    },
+    bindElements: (elementsClass, callback) => {
+        var i, blocks = document.querySelectorAll(elementsClass);
+        for(i in blocks) {
+            if(parseInt(i) == i) {
+                blocks[i].addEventListener('click', callback);
+            }
+        }
+    },
+    /**
+     * Binding events
+     * @param id
+     */
+    bindObjects: (id) => {
+
+        $skSlider.bindElements('li.sk-name > a', function (event){
+            var id = event.target.parentNode.getAttribute('data-id');
+            if(id){
+                $skSlider.activeById(id);
+            }
+        });
+
+        $skSlider.bindElements('li.sk-dot > a', function (event){
+            console.log(event.target.parentNode);
+            var id = event.target.parentNode.getAttribute('data-id');
+            console.log(id);
+            if(id) {
+                $skSlider.activeById(id);
+            }
+        });
+
+
+        $skSlider.bindElements('li.sk-arr-left', function (event){
+            var id = $skSlider.getItemByArrow(-1);
+            if(id) {
+                $skSlider.activeById(id);
+            }
+        });
+
+        $skSlider.bindElements('li.sk-arr-right', function (event){
+            var id = $skSlider.getItemByArrow(1);
+            if(id) {
+                $skSlider.activeById(id);
+            }
+        });
+    },
+
+    /**
+     * Logic create DOM and init process
+     * @param rootElement
+     * @param options
+     */
+    init:function(rootElement,options){
+        var i, j, names = [], dots = [], images =[], itemBlock = {} ;
+
+        $skSlider.options = {
+            ...$skSlider.defaults,
+            ...options
         };
 
-        var _this = this, i, j, names = [], dots = [], images =[], itemBlock = {} ;
-        var labels = {
-            city:'City:',
-            area:'Apartment area:',
-            time:'Repair time:',
-            cost:'Repair Cost:',
-        }
-        var template = {
-                name:'name',
-                description: 'description',
-                options:{
-                    city:'city',
-                    area:'area',
-                    time:'time',
-                    cost:'cost',
-                },
-                image:'image',
-                thumb: 'thumb'
-            };
-        var defaults = {
-            header:'Header sample',
-            slides:[]
-        }
-        var opts = $.extend( {}, defaults, options );
 
-
-        if(opts.slides.length > 0) {
-            var infoBlocks = $('<ul>', {class:'sk-blocks'});
-            for (i in opts.slides) {
-                let item = opts.slides[i];
-                let id = String(btoa(item.name))
-                    .replace('==','')
-                    .replace('=','');
+        if($skSlider.options.slides.length > 0) {
+            const infoBlocks =  $skSlider.makeElement('ul', {class:'sk-blocks'});
+            for (i in $skSlider.options.slides) {
+                let item = $skSlider.options.slides[i];
+                let id = String(btoa(item.name)).replace('==','').replace('=','');
                 names.push('<li class="sk-name" data-id="' + id + '"><a href="javascript:;">' + item.name + '</a></li>');
                 dots.push('<li class="sk-dot" data-id="' + id + '"><a href="javascript:;" \>&bull;</a></li>');
                 images.push('<li class="sk-images__item" data-id="' + id + '"><img src="' + item.image + '" class="sk-images__image"></li>');
-                itemBlock = $('<li>', {class:'sk-block', 'data-id':id});
-                $('<div>', {class:'sk-description', html:item.description}).appendTo(itemBlock);
-                var blocks = $('<div>', {class:'sk-info'});
+                itemBlock = $skSlider.makeElement('li', {class:'sk-block', 'data-id':id});
+                itemBlock.appendChild($skSlider.makeElement('div', {class:'sk-description', html:item.description}));
+                var blocks = $skSlider.makeElement('div', {class:'sk-info'});
                 for (j in item.options) {
-                    let subBlocks = $('<div>', {class:'sk-info__row'});
-                    $('<div>', {class:'sk-info__header', html:labels[j]}).appendTo(subBlocks);
-                    $('<div>', {class:'sk-info__text', html:item.options[j]}).appendTo(subBlocks);
-                    $(subBlocks).appendTo(blocks);
+                    let subBlocks = $skSlider.makeElement('div', {class:'sk-info__row'});
+                    subBlocks.appendChild($skSlider.makeElement('div', {class:'sk-info__header', html:$skSlider.labels[j]}));
+                    subBlocks.appendChild($skSlider.makeElement('div', {class:'sk-info__text', html:item.options[j]}));
+                    blocks.appendChild(subBlocks)
                 }
-                $(blocks).appendTo(itemBlock);
-                $(infoBlocks).append(itemBlock);
+                itemBlock.appendChild(blocks);
+                infoBlocks.appendChild(itemBlock)
             }
 
 
-            var contaner = $('<div>', {class:'sk-container'});
-            var contanerLeft = $('<div>', {class:'sk-container-left'});
+            var container = $skSlider.makeElement('div', {class:'sk-container'});
+
+            var containerLeft = $skSlider.makeElement('div', {class:'sk-container-left'});
+
+            containerLeft.appendChild($skSlider.makeElement('h2', {class:'sk-header', html:$skSlider.options.header}));
+            containerLeft.appendChild(infoBlocks);
+
+            var dotsHTML = $skSlider.makeElement('ul', {class:'sk-dots'});
+
+            dotsHTML.innerHTML = dotsHTML.innerHTML =  dots.join('');
+            dotsHTML.prepend($skSlider.makeElement('li', {class:'sk-arr-left'}));
+            dotsHTML.append($skSlider.makeElement('li', {class:'sk-arr-right'}));
+
+            containerLeft.appendChild(dotsHTML);
+            container.appendChild(containerLeft);
 
 
-            $(contanerLeft).append($('<h2>', {class:'sk-header', html:opts.header}));
+            var containerRight = $skSlider.makeElement('div', {class:'sk-container-right'});
 
+            var namesHtml = $skSlider.makeElement('ul', {class:'sk-names'});
+            namesHtml.innerHTML = namesHtml.innerHTML + names.join('');
 
-            $(infoBlocks).appendTo(contanerLeft);
+            containerRight.appendChild(namesHtml);
 
-            var dotsHTML = $('<ul>', {class:'sk-dots'});
-            $('<li>',{class:'sk-arr-left'}).appendTo(dotsHTML);
-            $(dots.join('')).appendTo(dotsHTML);
-            $('<li>',{class:'sk-arr-right'}).appendTo(dotsHTML);
-            $(dotsHTML).appendTo(contanerLeft);
-            $(contanerLeft).appendTo(contaner);
-
-            var contanerRight = $('<div>', {class:'sk-container-right'});
-
-            var namesHtml = $('<ul>', {class:'sk-names'}).append(names.join(''));
-            $(namesHtml).appendTo(contanerRight);
-            var imagesHtml = $('<ul>',{class:'sk-images'}).append(images.join(''));
-            $(imagesHtml).appendTo(contanerRight);
-
-            $(contanerRight).appendTo(contaner);
-
-            $(_this).append(contaner);
+            var imagesHtml = $skSlider.makeElement('ul');
+            imagesHtml.className = 'sk-images';
+            imagesHtml.innerHTML = imagesHtml.innerHTML + images.join('');
+            containerRight.appendChild(imagesHtml);
+            container.appendChild(containerRight);
+            rootElement.appendChild(container);
         }
-        hideObjects();
-        bindObjects();
+        $skSlider.hideObjects();
+        $skSlider.bindObjects();
     }
-}());
+};
+

@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=420, initial-scale=1"/>
     <title>Carousel</title>
-    <script src="node_modules/jquery/dist/jquery.min.js"></script>
     <script src="assets/js/script.js"></script>
     <link rel="stylesheet" href="assets/css/style.css">
 </head>
@@ -12,8 +11,12 @@
 
 <div class="slider"></div>
 <script>
-    $(function () {
-        $('div.slider').skslider({
+    window.addEventListener("DOMContentLoaded", (event) => {
+
+        /*
+         * Call to main object for create slides from data(json)
+         */
+        $skSlider.init(document.querySelector('.slider'),{
             header:'Completed projects',
             slides:[
                 {
